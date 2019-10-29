@@ -130,6 +130,86 @@ const NetSalary = () => {
   const [bkpIrpf, setBkpIrpf] = useState();
   const [bkpNetSalary, setBkpNetSalary] = useState();
 
+  const handleClick = () => {
+    setShowResult(true);
+    handleError();
+    setBkpSalary(salary);
+    calcSalaryInss();
+    calcIrff();
+    calcNetSalary();
+    setSalary('');
+    Keyboard.dismiss();
+  };
+
+  const calcSalaryInss = () => {
+    let inss, salaryInss;
+
+    if (salary <= 1751.81) {
+      inss = salary * 0.08;
+    } else if (salary <= 2919.72) {
+      inss = salary * 0.09;
+    } else if (salary <= 5839.45) {
+      inss = salary * 0.11;
+    } else {
+      inss = 642.34;
+    }
+
+    salaryInss = salary - inss;
+
+    setBkpInss(inss);
+
+    return {salaryInss, inss};
+  };
+
+  const calcIrff = () => {
+    let irpf, newSalary;
+
+    newSalary = calcSalaryInss();
+
+    const {salaryInss} = newSalary;
+
+    if (salaryInss <= 1903.98) {
+      irpf = 0;
+    } else if (salaryInss <= 2826.65) {
+      irpf = salaryInss * 0.075 - 142.8;
+    } else if (salaryInss <= 3751.05) {
+      irpf = salaryInss * 0.15 - 354.8;
+    } else if (salaryInss <= 4664.68) {
+      irpf = salaryInss * 0.225 - 636.13;
+    } else {
+      irpf = salaryInss * 0.275 - 869.36;
+    }
+
+    setBkpIrpf(irpf);
+    return irpf;
+  };
+
+  const calcNetSalary = () => {
+    let netSalary, discInss, discIrpf;
+
+    discIrpf = calcIrff();
+    discInss = calcSalaryInss();
+    const {inss} = discInss;
+
+    netSalary = salary - inss - discIrpf;
+
+    setBkpNetSalary(netSalary);
+  };
+
+  const handleError = () => {
+    if (salary <= 0 || isNaN(salary)) {
+      alert('DIGITE UM SALÁRIO VÁLIDO!!!');
+      setSalary('');
+      setShowResult(false);
+      return;
+    }
+  };
+
+  const close = () => {
+    setShowResult(false);
+    setSalary('');
+  };
+
   return (
     <Fragment>
       <StyledBar />
@@ -144,7 +224,7 @@ const NetSalary = () => {
             value={salary}
             onChangeText={salary => setSalary(salary.replace(',', '.'))}
           />
-          <ContentButtonCalculate>
+          <ContentButtonCalculate onPress={handleClick}>
             <ContentButtonCalculateText>Calcular</ContentButtonCalculateText>
           </ContentButtonCalculate>
           {showResult && (
@@ -200,7 +280,7 @@ const NetSalary = () => {
                 </ContentResultInfoBorderMoney>
               </ContentResultInfo>
               <ContentResultButtonBack>
-                <ContentResultButtonBackText>
+                <ContentResultButtonBackText onPress={close}>
                   Ocultar
                 </ContentResultButtonBackText>
               </ContentResultButtonBack>
