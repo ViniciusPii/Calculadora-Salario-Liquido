@@ -1,10 +1,11 @@
 import React, {Fragment, useState} from 'react';
 import styled from 'styled-components/native';
-import {Keyboard} from 'react-native';
+import {Keyboard, ScrollView} from 'react-native';
 
 const Page = styled.SafeAreaView`
   align-items: center;
   flex: 1;
+  height: 600px;
 `;
 
 const StyledBar = styled.SafeAreaView`
@@ -30,7 +31,7 @@ const Content = styled.View`
   border-radius: 5px;
   box-shadow: 0px 1px 5px #646464;
   height: auto;
-  margin-top: -100px;
+  margin-top: -80px;
   width: 90%;
 `;
 
@@ -78,19 +79,21 @@ const ContentResultInfo = styled.View`
   align-items: center;
   flex-direction: row;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 `;
 
 const ContentResultInfoTitle = styled.Text`
   color: #656565;
-  font-size: 18px;
+  font-size: 17px;
   font-weight: bold;
+  width: 45%;
 `;
 
 const ContentResultInfoBorderMoney = styled.View`
   border-radius: 3px;
   border: 2px solid #006400;
   flex-direction: row;
+  width: auto;
 `;
 
 const ContentResultInfo$ = styled.Text`
@@ -99,16 +102,14 @@ const ContentResultInfo$ = styled.Text`
   color: #fff;
   font-size: 18px;
   overflow: hidden;
-  padding: 2px;
+  padding: 2px 5px;
 `;
 
 const ContentResultInfoMoney = styled.Text`
-  width: 100px;
-  text-align: right;
-  font-size: 18px;
   color: #656565;
-  padding: 2px;
-  padding-right: 10px;
+  font-size: 18px;
+  padding: 0 12px;
+  text-align: center;
 `;
 
 const ContentResultButtonBack = styled.TouchableOpacity`
@@ -123,12 +124,12 @@ const ContentResultButtonBackText = styled.Text`
 `;
 
 const NetSalary = () => {
-  const [showResult, setShowResult] = useState(false);
-  const [salary, setSalary] = useState();
-  const [bkpSalary, setBkpSalary] = useState();
   const [bkpInss, setBkpInss] = useState();
   const [bkpIrpf, setBkpIrpf] = useState();
   const [bkpNetSalary, setBkpNetSalary] = useState();
+  const [bkpSalary, setBkpSalary] = useState();
+  const [salary, setSalary] = useState();
+  const [showResult, setShowResult] = useState(false);
 
   const handleClick = () => {
     setShowResult(true);
@@ -202,6 +203,18 @@ const NetSalary = () => {
       setSalary('');
       setShowResult(false);
       return;
+    } else if (salary > 99999) {
+      alert(
+        `UAU!!! R$ ${parseFloat(salary)
+          .toFixed(2)
+          .replace('.', ',')
+          .replace(
+            /(\d)(?=(\d{3})+(?!\d))/g,
+            '$1.',
+          )} POR MÊS? VOCÊ NÃO PRECISA DE UM APP, VOCÊ PRECISA É VIAJAR!!!`,
+      );
+      setSalary('');
+      setShowResult(false);
     }
   };
 
@@ -213,81 +226,91 @@ const NetSalary = () => {
   return (
     <Fragment>
       <StyledBar />
-      <Page>
-        <Header>
-          <HeaderTitle>Salário Líquido</HeaderTitle>
-        </Header>
-        <Content style={{elevation: 6}}>
-          <ContentInput
-            placeholder="Digite o seu Salário Bruto"
-            keyboardType="numeric"
-            value={salary}
-            onChangeText={salary => setSalary(salary.replace(',', '.'))}
-          />
-          <ContentButtonCalculate onPress={handleClick}>
-            <ContentButtonCalculateText>Calcular</ContentButtonCalculateText>
-          </ContentButtonCalculate>
-          {showResult && (
-            <ContentResult>
-              <ContentResultDivision />
-              <ContentResultInfo>
-                <ContentResultInfoTitle>Seu Salário é: </ContentResultInfoTitle>
-                <ContentResultInfoBorderMoney>
-                  <ContentResultInfo$>R$</ContentResultInfo$>
-                  <ContentResultInfoMoney>
-                    {parseFloat(bkpSalary)
-                      .toFixed(2)
-                      .replace('.', ',')}
-                  </ContentResultInfoMoney>
-                </ContentResultInfoBorderMoney>
-              </ContentResultInfo>
-              <ContentResultInfo>
-                <ContentResultInfoTitle>
-                  Desconto do INSS:
-                </ContentResultInfoTitle>
-                <ContentResultInfoBorderMoney>
-                  <ContentResultInfo$>R$</ContentResultInfo$>
-                  <ContentResultInfoMoney>
-                    {parseFloat(bkpInss)
-                      .toFixed(2)
-                      .replace('.', ',')}
-                  </ContentResultInfoMoney>
-                </ContentResultInfoBorderMoney>
-              </ContentResultInfo>
-              <ContentResultInfo>
-                <ContentResultInfoTitle>
-                  Desconto do IRPF:
-                </ContentResultInfoTitle>
-                <ContentResultInfoBorderMoney>
-                  <ContentResultInfo$>R$</ContentResultInfo$>
-                  <ContentResultInfoMoney>
-                    {parseFloat(bkpIrpf)
-                      .toFixed(2)
-                      .replace('.', ',')}
-                  </ContentResultInfoMoney>
-                </ContentResultInfoBorderMoney>
-              </ContentResultInfo>
-              <ContentResultDivision />
-              <ContentResultInfo>
-                <ContentResultInfoTitle>Você receberá:</ContentResultInfoTitle>
-                <ContentResultInfoBorderMoney>
-                  <ContentResultInfo$>R$</ContentResultInfo$>
-                  <ContentResultInfoMoney>
-                    {parseFloat(bkpNetSalary)
-                      .toFixed(2)
-                      .replace('.', ',')}
-                  </ContentResultInfoMoney>
-                </ContentResultInfoBorderMoney>
-              </ContentResultInfo>
-              <ContentResultButtonBack>
-                <ContentResultButtonBackText onPress={close}>
-                  Ocultar
-                </ContentResultButtonBackText>
-              </ContentResultButtonBack>
-            </ContentResult>
-          )}
-        </Content>
-      </Page>
+      <ScrollView keyboardShouldPersistTaps="always">
+        <Page>
+          <Header>
+            <HeaderTitle>Salário Líquido</HeaderTitle>
+          </Header>
+          <Content style={{elevation: 6}}>
+            <ContentInput
+              placeholder="Digite o seu Salário Bruto"
+              keyboardType="numeric"
+              value={salary}
+              onChangeText={salary => setSalary(salary.replace(',', '.'))}
+            />
+            <ContentButtonCalculate onPress={handleClick}>
+              <ContentButtonCalculateText>Calcular</ContentButtonCalculateText>
+            </ContentButtonCalculate>
+            {showResult && (
+              <ContentResult>
+                <ContentResultDivision />
+                <ContentResultInfo>
+                  <ContentResultInfoTitle>
+                    Salário Bruto:
+                  </ContentResultInfoTitle>
+                  <ContentResultInfoBorderMoney>
+                    <ContentResultInfo$>R$</ContentResultInfo$>
+                    <ContentResultInfoMoney>
+                      {parseFloat(bkpSalary)
+                        .toFixed(2)
+                        .replace('.', ',')
+                        .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}
+                    </ContentResultInfoMoney>
+                  </ContentResultInfoBorderMoney>
+                </ContentResultInfo>
+                <ContentResultInfo>
+                  <ContentResultInfoTitle>
+                    Desconto do INSS:
+                  </ContentResultInfoTitle>
+                  <ContentResultInfoBorderMoney>
+                    <ContentResultInfo$>R$</ContentResultInfo$>
+                    <ContentResultInfoMoney>
+                      {parseFloat(bkpInss)
+                        .toFixed(2)
+                        .replace('.', ',')
+                        .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}
+                    </ContentResultInfoMoney>
+                  </ContentResultInfoBorderMoney>
+                </ContentResultInfo>
+                <ContentResultInfo>
+                  <ContentResultInfoTitle>
+                    Desconto do IRPF:
+                  </ContentResultInfoTitle>
+                  <ContentResultInfoBorderMoney>
+                    <ContentResultInfo$>R$</ContentResultInfo$>
+                    <ContentResultInfoMoney>
+                      {parseFloat(bkpIrpf)
+                        .toFixed(2)
+                        .replace('.', ',')
+                        .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}
+                    </ContentResultInfoMoney>
+                  </ContentResultInfoBorderMoney>
+                </ContentResultInfo>
+                <ContentResultDivision />
+                <ContentResultInfo>
+                  <ContentResultInfoTitle>
+                    Você receberá:
+                  </ContentResultInfoTitle>
+                  <ContentResultInfoBorderMoney>
+                    <ContentResultInfo$>R$</ContentResultInfo$>
+                    <ContentResultInfoMoney>
+                      {parseFloat(bkpNetSalary)
+                        .toFixed(2)
+                        .replace('.', ',')
+                        .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}
+                    </ContentResultInfoMoney>
+                  </ContentResultInfoBorderMoney>
+                </ContentResultInfo>
+                <ContentResultButtonBack>
+                  <ContentResultButtonBackText onPress={close}>
+                    Ocultar
+                  </ContentResultButtonBackText>
+                </ContentResultButtonBack>
+              </ContentResult>
+            )}
+          </Content>
+        </Page>
+      </ScrollView>
     </Fragment>
   );
 };
