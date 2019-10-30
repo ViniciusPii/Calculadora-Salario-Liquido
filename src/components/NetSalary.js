@@ -5,17 +5,17 @@ import {Keyboard, ScrollView} from 'react-native';
 const Page = styled.SafeAreaView`
   align-items: center;
   flex: 1;
-  height: 600px;
+  height: 700px;
 `;
 
 const StyledBar = styled.SafeAreaView`
-  background-color: #006400;
+  background-color: #0047ff;
 `;
 
 const Header = styled.View`
   align-items: center;
-  background-color: #006400;
-  height: 30%;
+  background-color: #0047ff;
+  height: 25%;
   width: 100%;
 `;
 
@@ -37,7 +37,7 @@ const Content = styled.View`
 
 const ContentInput = styled.TextInput`
   border-radius: 5px;
-  border: 2px solid #006400;
+  border: 2px solid #0047ff;
   color: #656565;
   font-size: 18px;
   height: 50px;
@@ -47,7 +47,7 @@ const ContentInput = styled.TextInput`
 `;
 
 const ContentButtonCalculate = styled.TouchableOpacity`
-  background-color: #006400;
+  background-color: #0047ff;
   border-radius: 5px;
   color: #fff;
   height: 50px;
@@ -91,13 +91,13 @@ const ContentResultInfoTitle = styled.Text`
 
 const ContentResultInfoBorderMoney = styled.View`
   border-radius: 3px;
-  border: 2px solid #006400;
+  border: 2px solid #0047ff;
   flex-direction: row;
   width: auto;
 `;
 
 const ContentResultInfo$ = styled.Text`
-  background-color: #006400;
+  background-color: #0047ff;
   border-radius: 1px;
   color: #fff;
   font-size: 18px;
@@ -117,7 +117,7 @@ const ContentResultButtonBack = styled.TouchableOpacity`
 `;
 
 const ContentResultButtonBackText = styled.Text`
-  color: #006400;
+  color: #0047ff;
   font-size: 18px;
   margin-bottom: 30px;
   text-align: center;
